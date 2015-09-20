@@ -19,7 +19,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.view.WindowManager.LayoutParams;
 import android.widget.LinearLayout;
-import android.widget.VideoView;
+//import android.widget.VideoView;
 
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaArgs;
@@ -39,7 +39,7 @@ public class VideoPlayer extends CordovaPlugin implements OnCompletionListener, 
 
     private Dialog dialog;
 
-    private VideoView videoView;
+    private SmartVideoView videoView;
 
     private MediaPlayer player;
 
@@ -86,24 +86,6 @@ public class VideoPlayer extends CordovaPlugin implements OnCompletionListener, 
 
             return true;
         }
-        else if (action.equals("close")) {
-            if (dialog != null) {
-                if(player.isPlaying()) {
-                    player.stop();
-                }
-                player.release();
-                dialog.dismiss();
-            }
-
-            if (callbackContext != null) {
-                PluginResult result = new PluginResult(PluginResult.Status.OK);
-                result.setKeepCallback(false); // release status callback in JS side
-                callbackContext.sendPluginResult(result);
-                callbackContext = null;
-            }
-
-            return true;
-        }
         return false;
     }
 
@@ -137,10 +119,11 @@ public class VideoPlayer extends CordovaPlugin implements OnCompletionListener, 
         main.setHorizontalGravity(Gravity.CENTER_HORIZONTAL);
         main.setVerticalGravity(Gravity.CENTER_VERTICAL);
 
-        videoView = new VideoView(cordova.getActivity());
+        videoView = new SmartVideoView(cordova.getActivity());
         videoView.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
         // videoView.setVideoURI(uri);
         // videoView.setVideoPath(path);
+        videoView.setVideoSize(640, 360);
         main.addView(videoView);
 
         player = new MediaPlayer();
@@ -186,7 +169,7 @@ public class VideoPlayer extends CordovaPlugin implements OnCompletionListener, 
             return;
         }
 
-        if(android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN) {
+        /*if(android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN) {
             try {
                 int scalingMode = options.getInt("scalingMode");
                 switch (scalingMode) {
@@ -205,7 +188,7 @@ public class VideoPlayer extends CordovaPlugin implements OnCompletionListener, 
                 callbackContext = null;
                 return;
             }
-        }
+        }*/
 
         final SurfaceHolder mHolder = videoView.getHolder();
         mHolder.setKeepScreenOn(true);
